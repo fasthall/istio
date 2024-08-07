@@ -387,6 +387,15 @@ func TestInjection(t *testing.T) {
 				}
 			},
 		},
+		{
+			// Verify mergeTrafficAnnotations merges traffic annotation and global proxy config
+			in:   "merge-traffic-annotations.yaml",
+			want: "merge-traffic-annotations.yaml.injected",
+			setFlags: []string{
+				"values.global.proxy.includeOutboundPorts=8500,8501",
+				"values.global.proxy.mergeTrafficAnnotations=true",
+			},
+		},
 	}
 	// Keep track of tests we add options above
 	// We will search for all test files and skip these ones
