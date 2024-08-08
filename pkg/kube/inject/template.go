@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"slices"
 	"strconv"
 	"strings"
 	"text/template"
@@ -63,6 +64,7 @@ func createInjectionFuncmap() template.FuncMap {
 		"strdict":             strdict,
 		"toJsonMap":           toJSONMap,
 		"mergeMaps":           mergeMaps,
+		"combineAnnotation":   combineAnnotationAndGlobalConfig,
 	}
 }
 
@@ -395,4 +397,22 @@ func mergeMaps(maps ...map[string]string) map[string]string {
 		}
 	}
 	return res
+}
+
+// combineAnnotationAndGlobalConfig works the same as getAnnotation if merge is false.
+// If merge is true, combineAnnotationAndGlobalConfig merges the values in the annotation and global config
+func combineAnnotationAndGlobalConfig(merge bool, meta metav1.ObjectMeta, name string, global string) string {
+	annotation, ok := meta.Annotations[name]
+	if !ok {
+		return global
+	}
+	if !merge {
+		return annotation
+	}
+	res := []string{}
+	res = append(res, strings.Split(annotation, ",")...)
+	res = append(res, strings.Split(global, ",")...)
+	slices.Sort(res)
+	res = slices.Compact(res)
+	return strings.Join(res, ",")
 }

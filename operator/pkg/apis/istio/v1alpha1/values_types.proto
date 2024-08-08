@@ -1151,6 +1151,9 @@ message ProxyConfig {
 
   // A comma separated list of outbound ports for which traffic is to be redirected to Envoy, regardless of the destination IP.
   string includeOutboundPorts = 39;
+
+  // Merge traffic annotations, e.g. includeOutboundPorts, to global proxy config instead of overriding it.
+  google.protobuf.BoolValue mergeTrafficAnnotations = 40;
 }
 
 message StartupProbe {
